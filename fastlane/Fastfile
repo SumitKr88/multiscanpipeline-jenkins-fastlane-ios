@@ -1,0 +1,238 @@
+# This file contains the fastlane.tools configuration
+# You can find the documentation at https://docs.fastlane.tools
+#
+# For a list of all available actions, check out
+#
+#     https://docs.fastlane.tools/actions
+#
+# For a list of all available plugins, check out
+#
+#     https://docs.fastlane.tools/plugins/available-plugins
+#
+
+# Uncomment the line if you want fastlane to automatically update itself
+# update_fastlane
+default_platform(:ios)
+skip_docs
+
+# iOS build - Fill below configuration input as per your project need and replace dummy inputs with actual one.
+# For more information on build settings , see:
+# https://docs.fastlane.tools/actions/build_app/#build_app
+app_name = ENV["APP_NAME"]
+scheme = ENV["APP_SCHEME"]
+project = ENV["APP_PROJECT"]
+workspace = ENV["APP_WORKSPACE"]
+target = ENV["APP_TARGET"]
+bundle_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
+
+# The configuration to use when building the app. Defaults to 'Release'
+build_config = ENV["APP_BUILD_CONFIG"]
+clean_build = ENV["APP_CLEAN_BUILD"]
+
+# Method used to export the archive. 
+# Valid values are: app-store, ad-hoc, package, enterprise, development, developer-id
+export_method = ENV["APP_EXPORT_METHOD"]
+
+# Code signing identities
+# Code signing identities
+codesign_certificate = ENV["APP_CODESIGN_CERTIFICATE"]
+provisioning_profile = ENV["APP_PROVISIONING_PROFILE"]
+
+# Unit test case
+test_scheme = ENV["APP_TEST_SCHEME"]
+
+# Upload/Distribution
+distribution = ENV["APP_DISTRIBUTION"]
+
+# For firebase/testfairy/appcenter etc
+api_key = ENV["DISTRIBUTION_API_TOKEN"]
+
+# Push changes
+remote_branch = ENV["BRANCH_NAME"]
+release_notes = ENV["RELEASE_NOTES"]
+
+# Publish build
+channel = ENV["PUBLISH_TO_CHANNEL"]
+webhook_url = ENV["WEBHOOK_URL"]
+# webhook_url = "https://fastlanesample.webhook.office.com/webhookb2/a7a0ghu182w77378363/63g7732/"
+
+# Output build path
+output_directory_path = ENV["WORKSPACE"] + "/build/"
+
+# Project directory
+project_directory = ENV["WORKSPACE"] + "/reports/"
+# Output build name
+output_build_name = ""
+
+desc "Runs all the Unit Tests"
+lane :tests do
+  # Publish Mac Notification
+  notification(subtitle: "Lane Executing Test Cases", message: "Test Cases!")
+# Check if reports folder exists
+# This step is optional - if you want to keep all reports like test cases, coverage, docs etc under a specific folder.
+            sh(" if [ ! -d #{project_directory} ] 
+            then
+                mkdir #{project_directory}
+            fi ")
+# Run tests
+  run_tests(clean: true,
+            fail_build: false,
+            scheme: test_scheme,
+            code_coverage: true,
+            device: "iPhone 11",
+            output_types: "html,junit",
+            output_directory: "reports/")
+end
+
+desc "Does a static analysis of the project. Configure the options in .swiftlint.yml"
+lane :lint do
+  puts "Linting..."
+  swiftlint(
+    mode: :lint,
+    executable: "Pods/SwiftLint/swiftlint",
+    output_file: "reports/swiftlint.xml",
+    reporter: "checkstyle",
+    config_file: ".swiftlint.yml",
+    ignore_exit_status: true
+  )
+end
+
+desc "Runs all code coverage analysis and generate report"
+lane :code_coverage do
+
+  puts "Code Coverage..."
+  coverage_files_to_ignore = [
+    'R.generated.swift',
+    'Pods/*',
+  ]
+  # Generate code coverage report
+  code_cov_args = {
+    scheme: ENV["APP_SCHEME"],
+    proj: ENV["APP_PROJECT"],
+    cobertura_xml: true,
+    jenkins: true, 
+    verbose: true,
+    ignore: coverage_files_to_ignore,
+    output_directory: "reports/"
+  }
+  if ENV["APP_WORKSPACE"]
+    code_cov_args[:workspace] = ENV["APP_WORKSPACE"]
+  end
+
+  slather(code_cov_args)
+end
+
+platform :ios do
+  desc "This lane initiates the build process. Takes argument(options) as app_build_name"
+    lane :build do |options|
+      puts "build process started..."
+  # Options passed by user
+      puts options
+  # Ensure that the git status is clean and no megre head or un-commited code exists
+      ensure_git_status_clean
+  # Increment build number
+      updated_build_num = increment_build_number(xcodeproj: project)
+  # Commit the version bump
+      commit_version_bump(xcodeproj: project)
+  # Compile bitcode is hardcoded here, if required can be made configurable by moving to global variables list
+      compile_bitcode = false 
+      puts "compile_bitcode: #{compile_bitcode}"
+      
+      args = {  scheme: scheme,
+                clean: clean_build,
+              export_method: export_method,
+              configuration: build_config,  
+              include_bitcode: false,
+              export_options: ({
+                compileBitcode: compile_bitcode,
+                provisioningProfiles: {
+                  bundle_identifier => provisioning_profile
+                }
+              }),
+              codesigning_identity: codesign_certificate,
+              output_directory: output_directory_path,
+              output_name: options[:app_build_name],
+           }
+      if workspace
+            args[:workspace] = workspace
+          else
+            args[:project] = project
+          end
+# Fastlane build action to trigger build with required args
+build_app(args)
+ 
+end
+
+desc "This lane will upload build to the respective distribution opted for"
+lane :upload do |options|
+output_build_name = options[:app_build_name]
+        
+    #Release notes - If empty will show last git commits in the notes
+    if release_notes.empty?
+      # Fetch changelog from Git repo
+      release_notes = changelog_from_git_commits(
+                          commits_count: "10",
+                          pretty: "- (%ae) %s",
+                          date_format: "short",
+                          match_lightweight_tag: false, 
+                          merge_commit_filtering: "exclude_merges")
+    end
+    puts "APP DISTRIBUTION : #{distribution}"
+# Publish to the channel
+    publish(build_name: output_build_name, version_num: get_version_number(target: target, configuration: build_config))
+# Select upload option as per user selection
+    case distribution
+    when 'testfairy' 
+        # Push build on to TestFairy 
+        testfairy(api_key: api_key,
+                    ipa: output_directory_path + output_build_name + ".ipa",
+                    symbols_file: output_directory_path + output_build_name + ".app.dSYM.zip",
+                    comment: release_notes,
+                    testers_groups: groups,
+                    notify: "on")
+when 'testflight'
+        # Push build on to TestFlight
+        upload_to_testflight(
+                    username: CredentialsManager::AppfileConfig.try_fetch_value(:apple_id),
+                    app_identifier: bundle_identifier,
+                    ipa: lane_context[SharedValues::IPA_OUTPUT_PATH],
+                  skip_submission: true,
+                  skip_waiting_for_build_processing: true,
+                    groups: groups,
+                    changelog: release_notes)
+when 'appcenter'
+        desc "This lane will upload build on AppCenter"
+        appcenter_upload(
+                  api_token: api_key,
+                  owner_name: "FastlaneSampleOwner",
+                  app_name: app_name,
+                  file: lane_context[SharedValues::IPA_OUTPUT_PATH],
+                  dsym: lane_context[SharedValues::DSYM_OUTPUT_PATH],
+                  release_notes: release_notes,
+                  notify_testers: true
+        )
+when 'firebase'
+        firebase_app_distribution(
+                    app: api_key,
+                    ipa_path: output_directory_path + output_build_name + ".ipa",
+                    groups: groups,
+                    release_notes: release_notes
+        )
+else
+        # No channel opted for notifing build release
+        puts "No distribution opted to upload app"
+      end
+end
+
+desc "This lane will commit version bump and push changes to remote "
+  lane :push_to_remote do
+# Push the commit to remote branch
+    # simple version. pushes "master" branch to "origin" remote
+    push_to_git_remote(remote: "origin", 
+                       local_branch: "HEAD",  
+                       remote_branch: remote_branch, 
+                       force: true, 
+                       tags: true)
+    end
+  
+end

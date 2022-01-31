@@ -1,0 +1,14 @@
+# Apple Configuration
+# filed with some random details, replace these with your actual ones
+app_identifier("com.sk.AdManagerTest") # The bundle identifier of your app
+apple_id("multibranchpipelinesample@gmail.com") # Your Apple email address
+
+ENV["FASTLANE_APPLE_APPLICATION_SPECIFIC_PASSWORD"] = "test-fast-lane-sample"
+itc_team_id("12000000") # iTunes Connect Team ID
+team_id("SFA163X25Z") # Developer Portal Team ID
+
+# Override timeout to increase to custom value
+ENV["FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT"] = "180"
+ENV["FASTLANE_XCODE_LIST_TIMEOUT"] = "180"
+# For more information about the Appfile, see:
+# https://docs.fastlane.tools/advanced/#appfile

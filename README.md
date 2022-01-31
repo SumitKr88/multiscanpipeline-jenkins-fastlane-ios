@@ -1,2 +1,2 @@
-# multiscanpipeline-jenkins-fastlane-ios
-Sample iOS project to test Jenkins + fastlane multiscan pipeline job type
+# multiscanpipeline-sample-ios
+Sample iOS project to test Jenkins multiscan pipeline job type 
