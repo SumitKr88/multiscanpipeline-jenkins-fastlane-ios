@@ -32,13 +32,13 @@ pipeline {
         APP_WORKSPACE = 'AdManagerTest.xcworkspace'
         APP_TEST_SCHEME = 'AdManagerTest'
 
-		APP_BUILD_CONFIG = 'Release'
-		APP_EXPORT_METHOD = 'app-store'
-		APP_COMPILE_BITCODE = false
-		GROUPS = 'HWP Dev Internal'
-		APP_DISTRIBUTION = 'testflight'
-		APP_PROVISIONING_PROFILE = 'Test Flight test Profile'
-		APP_CODESIGN_CERTIFICATE = 'iPhone Distribution: Multibranch Sample XV86347CF' 
+	APP_BUILD_CONFIG = 'Release'
+	APP_EXPORT_METHOD = 'app-store'
+	APP_COMPILE_BITCODE = false
+	GROUPS = 'Distribution group name'
+	APP_DISTRIBUTION = 'testflight'
+	APP_PROVISIONING_PROFILE = 'Test Flight test Profile'
+	APP_CODESIGN_CERTIFICATE = 'iPhone Distribution: Multibranch Sample XV86347CF' 
         
         APP_STATIC_CODE_ANALYZER_REPORT = true
         APP_COVERAGE_REPORT = true
