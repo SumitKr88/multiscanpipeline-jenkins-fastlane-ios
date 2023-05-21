@@ -5,7 +5,7 @@ target 'AdManagerTest' do
   # Comment the next line if you don't want to use dynamic frameworks
   use_frameworks!
   pod 'SwiftLint'
-  pod 'Google-Mobile-Ads-SDK', '7.48.0'
+  pod 'Google-Mobile-Ads-SDK'
 
   # Pods for AdManagerTest
 	

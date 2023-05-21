@@ -12,7 +12,7 @@ import UIKit
 class ViewController: UIViewController {
 
   /// The AdManager banner view.
-  @IBOutlet weak var bannerView: DFPBannerView!
+  @IBOutlet weak var bannerView: GADBannerView!
     
     lazy var adBannerView: GADBannerView = {
         /// Set custom Ad Size
@@ -28,11 +28,11 @@ class ViewController: UIViewController {
     
   override func viewDidLoad() {
     super.viewDidLoad()
-    print("Google Mobile Ads SDK version: \(DFPRequest.sdkVersion())")
+    print("Google Mobile Ads SDK version: \(GADBannerView.version())")
     bannerView.adUnitID = "/6499/example/banner"
     bannerView.rootViewController = self
     bannerView.delegate = self
-    bannerView.load(DFPRequest())
+    bannerView.load(GADRequest())
     
     //addBannerViewToView(adBannerView)
     //Request a Google Ad
@@ -69,8 +69,8 @@ extension ViewController: GADBannerViewDelegate {
     }
 
     /// Tells the delegate an ad request failed.
-    func adView(_ bannerView: GADBannerView,
-        didFailToReceiveAdWithError error: GADRequestError) {
-      print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
-    }
+//    func adView(_ bannerView: GADBannerView,
+//        didFailToReceiveAdWithError error: GADRequestError) {
+//      print("adView:didFailToReceiveAdWithError: \(error.localizedDescription)")
+//    }
 }
