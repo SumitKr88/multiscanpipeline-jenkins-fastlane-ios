@@ -17,7 +17,7 @@ skip_docs
 
 # Project directory
 project_directory = ENV["BITRISE_SOURCE_DIR"]
-reports_directory = project_directory + "reports/"
+reports_directory = project_directory + "/reports/"
 scheme = ENV["BITRISE_SCHEME"]
 
 
@@ -94,7 +94,7 @@ lane :generate_coverage_report do
 
   # notification(subtitle: "Lane Executing Coverage Report", message: "Coverage in progress!")
 
-  workspace_path = project_directory + ENV["BITRISE_PROJECT_PATH"]
+  workspace_path = project_directory + "/" +ENV["BITRISE_PROJECT_PATH"]
   xcov(
     workspace: project_directory,
     scheme: scheme,
