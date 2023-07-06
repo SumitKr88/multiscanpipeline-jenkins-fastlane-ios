@@ -15,54 +15,11 @@
 default_platform(:ios)
 skip_docs
 
-# iOS build - Fill below configuration input as per your project need and replace dummy inputs with actual one.
-# For more information on build settings , see:
-# https://docs.fastlane.tools/actions/build_app/#build_app
-app_name = ENV["APP_NAME"]
-scheme = ENV["APP_SCHEME"]
-project = ENV["APP_PROJECT"]
-workspace = ENV["APP_WORKSPACE"]
-target = ENV["APP_TARGET"]
-bundle_identifier = CredentialsManager::AppfileConfig.try_fetch_value(:app_identifier)
-
-# The configuration to use when building the app. Defaults to 'Release'
-build_config = ENV["APP_BUILD_CONFIG"]
-clean_build = ENV["APP_CLEAN_BUILD"]
-
-# Method used to export the archive. 
-# Valid values are: app-store, ad-hoc, package, enterprise, development, developer-id
-export_method = ENV["APP_EXPORT_METHOD"]
-
-# Code signing identities
-# Code signing identities
-codesign_certificate = ENV["APP_CODESIGN_CERTIFICATE"]
-provisioning_profile = ENV["APP_PROVISIONING_PROFILE"]
-
-# Unit test case
-test_scheme = ENV["APP_TEST_SCHEME"]
-
-# Upload/Distribution
-distribution = ENV["APP_DISTRIBUTION"]
-
-# For firebase/testfairy/appcenter etc
-api_key = ENV["DISTRIBUTION_API_TOKEN"]
-
-# Push changes
-remote_branch = ENV["BRANCH_NAME"]
-release_notes = ENV["RELEASE_NOTES"]
-
-# Publish build
-channel = ENV["PUBLISH_TO_CHANNEL"]
-webhook_url = ENV["WEBHOOK_URL"]
-# webhook_url = "https://fastlanesample.webhook.office.com/webhookb2/a7a0ghu182w77378363/63g7732/"
-
-# Output build path
-output_directory_path = ENV["WORKSPACE"] + "/build/"
-
 # Project directory
-project_directory = ENV["WORKSPACE"] + "/reports/"
-# Output build name
-output_build_name = ""
+project_directory = ENV["BITRISE_SOURCE_DIR"]
+reports_directory = project_directory + "reports/"
+scheme = ENV["BITRISE_SCHEME"]
+
 
 desc "Runs all the Unit Tests"
 lane :tests do
@@ -120,6 +77,47 @@ lane :code_coverage do
   end
 
   slather(code_cov_args)
+end
+
+desc "Runs all code coverage analysis and generate report"
+lane :generate_coverage_report do
+
+  sh(" if [ -d #{reports_directory} ] 
+            then
+              rm -rf #{reports_directory}
+            fi ")
+  # Build and run your tests to generate the coverage report
+  scan(
+    scheme: scheme, # Replace with your scheme name
+    code_coverage: true,
+  )
+
+  # notification(subtitle: "Lane Executing Coverage Report", message: "Coverage in progress!")
+
+  workspace_path = project_directory + ENV["BITRISE_PROJECT_PATH"]
+  xcov(
+    workspace: project_directory,
+    scheme: scheme,
+    output_directory: "reports/",
+    only_project_targets: false,
+    json_report: true
+  )
+
+  file_path = reports_directory + "report.json"
+  coverage_report = JSON.parse(File.read(file_path))
+
+    # Extract relevant information from the coverage report
+    summary = coverage_report["targets"].map do |target|
+      target_name = target["name"]
+      target_summary = target["coverage"]
+      "#{target_name}: #{target_summary}%"
+    end.join("\n")
+
+  puts "compile_bitcode: #{summary}"
+  coverage_summary = coverage_report["coverage"]
+  
+  notification(subtitle: "Coverage % :::::: ", message: "#{coverage_summary}")
+  puts "compile_bitcode: #{coverage_summary}"
 end
 
 platform :ios do
