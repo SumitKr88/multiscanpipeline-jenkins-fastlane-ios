@@ -48,11 +48,27 @@ lane :lint do
   swiftlint(
     mode: :lint,
     executable: "Pods/SwiftLint/swiftlint",
-    output_file: "reports/swiftlint.xml",
-    reporter: "checkstyle",
+    output_file: "reports/swiftlint.json",
+    reporter: "json",
     config_file: ".swiftlint.yml",
     ignore_exit_status: true
   )
+
+  file_path = reports_directory + "swiftlint.json"
+  parsed_data = JSON.parse(File.read(file_path))
+  # Group lint occurrences by type
+  grouped_data = parsed_data.group_by { |lint| lint['severity'] }
+
+  # Count the occurrences for each lint type
+  occurrence_count = grouped_data.transform_values(&:count)
+
+  # Print the occurrence count for each lint type
+  occurrence_count.each do |type, count|
+    puts "Lint Severity: #{type}"
+    puts "Occurrences: #{count}"
+    puts "---"
+  end
+
 end
 
 desc "Runs all code coverage analysis and generate report"
@@ -100,7 +116,7 @@ lane :generate_coverage_report do
     workspace: workspace_path,
     scheme: scheme,
     output_directory: "reports/",
-    only_project_targets: false,
+    only_project_targets: true,
     json_report: true
   )
 
@@ -114,11 +130,11 @@ lane :generate_coverage_report do
       "#{target_name}: #{target_summary}%"
     end.join("\n")
 
-  puts "compile_bitcode: #{summary}"
+  puts "Code coverage: #{summary}"
+
   coverage_summary = coverage_report["coverage"]
-  
   notification(subtitle: "Coverage % :::::: ", message: "#{coverage_summary}")
-  puts "compile_bitcode: #{coverage_summary}"
+  puts "Avg Coverage: #{coverage_summary}"
 end
 
 platform :ios do

@@ -1,0 +1,58 @@
+disabled_rules: # rule identifiers to exclude from running
+  - missing_docs
+  - function_parameter_count
+  - line_length
+  - redundant_string_enum_value
+  - implicit_getter
+  - valid_ibinspectable
+  - trailing_whitespace
+  - computed_accessors_order
+  - comment_spacing
+  - multiple_closures_with_trailing_closure
+  - empty_enum_arguments
+opt_in_rules: # some rules are only opt-in
+  - empty_count
+  - force_unwrapping
+only_rules:
+excluded: # paths to ignore during linting. Takes precedence over `included`.
+  - Carthage
+  - Pods
+  - Source/ExcludedFolder
+  - Source/ExcludedFile.swift
+# configurable rules can be customized from this configuration file
+# binary rules can set their severity level
+force_cast: warning # implicitly
+force_unwrapping: error # implicitly
+force_try:
+  severity: warning # explicitly
+# rules that have both warning and error levels, can set just the warning level
+# implicitly
+#line_length: 510
+# they can set both implicitly with an array
+function_body_length:
+  - 100
+  - 150
+# or they can set both explicitly
+type_body_length:
+  warning: 800
+  error: 900
+file_length:
+  warning: 1200
+  error: 1500
+# naming rules can set warnings/errors for min_length and max_length
+# additionally they can set excluded names
+type_name:
+  min_length: 2 # only warning
+  max_length: # warning and error
+    warning: 40
+    error: 50
+  excluded: iPhone # excluded via string
+identifier_name:
+  min_length: 2
+  max_length: # warning and error
+    warning: 40
+    error: 50
+cyclomatic_complexity:
+  warning: 15
+  error: 20
+reporter: "xcode" # reporter type (xcode, json, csv, checkstyle)

@@ -1,0 +1,128 @@
+[
+  {
+    "character" : 13,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/ViewController.swift",
+    "line" : 14,
+    "reason" : "Colons should be next to the identifier when specifying a type and next to the key in dictionary literals",
+    "rule_id" : "colon",
+    "severity" : "Warning",
+    "type" : "Colon Spacing"
+  },
+  {
+    "character" : 17,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/ViewController.swift",
+    "line" : 38,
+    "reason" : "Force unwrapping should be avoided",
+    "rule_id" : "force_unwrapping",
+    "severity" : "Error",
+    "type" : "Force Unwrapping"
+  },
+  {
+    "character" : 5,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/ViewController.swift",
+    "line" : 73,
+    "reason" : "A doc comment should be attached to a declaration",
+    "rule_id" : "orphaned_doc_comment",
+    "severity" : "Warning",
+    "type" : "Orphaned Doc Comment"
+  },
+  {
+    "character" : 7,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 22,
+    "reason" : "TODOs should be resolved (Come back later1)",
+    "rule_id" : "todo",
+    "severity" : "Warning",
+    "type" : "Todo"
+  },
+  {
+    "character" : 11,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 26,
+    "reason" : "TODOs should be resolved (Come back later2)",
+    "rule_id" : "todo",
+    "severity" : "Warning",
+    "type" : "Todo"
+  },
+  {
+    "character" : 11,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 31,
+    "reason" : "TODOs should be resolved (Come back later3)",
+    "rule_id" : "todo",
+    "severity" : "Warning",
+    "type" : "Todo"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 39,
+    "reason" : "Files should have a single trailing newline",
+    "rule_id" : "trailing_newline",
+    "severity" : "Warning",
+    "type" : "Trailing Newline"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 15,
+    "reason" : "Limit vertical whitespace to a single empty line; currently 3",
+    "rule_id" : "vertical_whitespace",
+    "severity" : "Warning",
+    "type" : "Vertical Whitespace"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/AppDelegate.swift",
+    "line" : 37,
+    "reason" : "Limit vertical whitespace to a single empty line; currently 2",
+    "rule_id" : "vertical_whitespace",
+    "severity" : "Warning",
+    "type" : "Vertical Whitespace"
+  },
+  {
+    "character" : 7,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/SceneDelegate.swift",
+    "line" : 23,
+    "reason" : "TODOs should be resolved (Come back later4)",
+    "rule_id" : "todo",
+    "severity" : "Warning",
+    "type" : "Todo"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/SceneDelegate.swift",
+    "line" : 54,
+    "reason" : "Files should have a single trailing newline",
+    "rule_id" : "trailing_newline",
+    "severity" : "Warning",
+    "type" : "Trailing Newline"
+  },
+  {
+    "character" : 19,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/SceneDelegate.swift",
+    "line" : 20,
+    "reason" : "Prefer `!= nil` over `let _ =`",
+    "rule_id" : "unused_optional_binding",
+    "severity" : "Warning",
+    "type" : "Unused Optional Binding"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/SceneDelegate.swift",
+    "line" : 15,
+    "reason" : "Limit vertical whitespace to a single empty line; currently 2",
+    "rule_id" : "vertical_whitespace",
+    "severity" : "Warning",
+    "type" : "Vertical Whitespace"
+  },
+  {
+    "character" : null,
+    "file" : "\/Users\/sumitkumar\/Documents\/GitHub\/multiscanpipeline-jenkins-fastlane-ios\/AdManagerTest\/SceneDelegate.swift",
+    "line" : 52,
+    "reason" : "Limit vertical whitespace to a single empty line; currently 2",
+    "rule_id" : "vertical_whitespace",
+    "severity" : "Warning",
+    "type" : "Vertical Whitespace"
+  }
+]
