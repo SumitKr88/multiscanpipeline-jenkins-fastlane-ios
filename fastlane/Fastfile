@@ -139,7 +139,7 @@ end
 lane :generate_app_size_metrics do
   # Build the app
   sh("xcodebuild -workspace #{workspace_path} -scheme #{scheme} clean build -destination 'generic/platform=iOS Simulator'")
-  sh("echo $BITRISE_IPA_PATH")
+  sh("echo $BITRISE_XCODE_ARCHIVE_PATH")
   sh("echo $BITRISE_DEPLOY_DIR")
   sh("echo $BITRISE_SOURCE_DIR")
   puts "Sym root : #{ENV["SYMROOT"]}"
