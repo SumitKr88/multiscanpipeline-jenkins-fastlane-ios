@@ -140,6 +140,7 @@ lane :generate_app_size_metrics do
   # Build the app
   sh("xcodebuild -workspace #{workspace_path} -scheme #{scheme} clean build -destination 'generic/platform=iOS Simulator'")
   puts "App path : #{ENV["CODESIGNING_FOLDER_PATH"]}"
+  puts "Sym root : #{ENV["SYMROOT"]}"
   # Get the path to the .app bundle
   app_path = ENV["CODESIGNING_FOLDER_PATH"] + "/AdManagerTest.app"
 
