@@ -30,10 +30,6 @@
 /// Extras the publisher registered with -[GADRequest registerAdNetworkExtras:].
 @property(nonatomic, readonly, nullable) id<GADAdNetworkExtras> extras;
 
-/// The value of childDirectedTreatment supplied by the publisher. Is nil if the publisher hasn't
-/// specified child directed treatment. Is @YES if child directed treatment is enabled.
-@property(nonatomic, readonly, nullable) NSNumber *childDirectedTreatment;
-
 /// Indicates whether the publisher is requesting test ads.
 @property(nonatomic, readonly) BOOL isTestRequest;
 
@@ -54,5 +50,12 @@
 /// Deprecated and unsupported. Always returns 0.
 @property(nonatomic, readonly) CGFloat userLocationAccuracyInMeters GAD_DEPRECATED_MSG_ATTRIBUTE(
     "Deprecated and unsupported. Always returns 0.");
+
+/// The value of childDirectedTreatment supplied by the publisher. Is nil if the publisher hasn't
+/// specified child directed treatment. Is @YES if child directed treatment is enabled.
+@property(nonatomic, readonly, nullable)
+    NSNumber *childDirectedTreatment GAD_DEPRECATED_MSG_ATTRIBUTE(
+        "Deprecated. Use "
+        "GADMobileAds.sharedInstance.requestConfiguration.tagForChildDirectedTreatment instead.");
 
 @end

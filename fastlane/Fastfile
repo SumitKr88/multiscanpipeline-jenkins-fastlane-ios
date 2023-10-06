@@ -20,7 +20,7 @@ project_directory = ENV["BITRISE_SOURCE_DIR"]
 reports_directory = project_directory + "/reports/"
 scheme = ENV["BITRISE_SCHEME"]
 workspace = ENV["BITRISE_PROJECT_PATH"]
-
+workspace_path = project_directory + "/" + workspace
 
 desc "Runs all the Unit Tests"
 lane :tests do
@@ -111,7 +111,6 @@ lane :generate_coverage_report do
 
   # notification(subtitle: "Lane Executing Coverage Report", message: "Coverage in progress!")
 
-  workspace_path = project_directory + "/" + workspace
   xcov(
     workspace: workspace_path,
     scheme: scheme,
@@ -135,6 +134,28 @@ lane :generate_coverage_report do
   coverage_summary = coverage_report["coverage"]
   notification(subtitle: "Coverage % :::::: ", message: "#{coverage_summary}")
   puts "Avg Coverage: #{coverage_summary}"
+end
+
+lane :generate_app_size_metrics do
+  # Build the app
+  sh("xcodebuild -workspace #{workspace_path} -scheme #{scheme} clean build -destination 'generic/platform=iOS Simulator'")
+  puts "App path : #{ENV["BITRISE_DEPLOY_DIR"]}"
+  # Get the path to the .app bundle
+  app_path = ENV["BITRISE_DEPLOY_DIR"] + "/AdManagerTest.app"
+
+  # Calculate the app size
+  app_size_info = sh("du -sh #{app_path}")
+  puts "App size : #{app_size_info}"
+  # Retrieve app size metrics
+  #build_settings = sh("xcodebuild -showBuildSettings -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest")
+
+ # puts "Path for .app : #{app_path}"
+  #app_size_info = sh("du -sh #{app_path}")
+
+  # Extract summary and print
+  #summary = extract_summary(build_settings, app_size_info)
+  #puts "App Size Metrics Summary:"
+  #puts summary
 end
 
 platform :ios do
