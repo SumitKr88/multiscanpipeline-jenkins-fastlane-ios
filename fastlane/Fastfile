@@ -17,10 +17,10 @@ skip_docs
 
 # Project directory
 project_directory = ENV["BITRISE_SOURCE_DIR"]
-#reports_directory = project_directory + "/reports/"
+reports_directory = project_directory + "/reports/"
 scheme = ENV["BITRISE_SCHEME"]
 workspace = ENV["BITRISE_PROJECT_PATH"]
-#workspace_path = project_directory + "/" + workspace
+workspace_path = project_directory + "/" + workspace
 
 desc "Runs all the Unit Tests"
 lane :tests do
