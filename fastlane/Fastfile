@@ -17,10 +17,10 @@ skip_docs
 
 # Project directory
 project_directory = ENV["BITRISE_SOURCE_DIR"]
-reports_directory = project_directory + "/reports/"
+#reports_directory = project_directory + "/reports/"
 scheme = ENV["BITRISE_SCHEME"]
 workspace = ENV["BITRISE_PROJECT_PATH"]
-workspace_path = project_directory + "/" + workspace
+#workspace_path = project_directory + "/" + workspace
 
 desc "Runs all the Unit Tests"
 lane :tests do
@@ -136,19 +136,60 @@ lane :generate_coverage_report do
   puts "Avg Coverage: #{coverage_summary}"
 end
 
+lane :generate_app_size do
+  # Build the app
+  sh("xcodebuild -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest clean build -destination 'generic/platform=iOS Simulator'")
+  # Run xcodebuild and capture build settings in a variable
+  build_settings=sh("xcodebuild -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest -showBuildSettings | grep 'BUILD_ROOT'")
+
+  # Split the string by '=' and remove leading/trailing spaces
+  # Use regex to find the BUILD_ROOT value
+  # Split the output into lines and find the line containing BUILD_ROOT
+  build_root_line = build_settings.lines.find { |line| line.include?("BUILD_ROOT") }
+  puts "build_root_line : #{build_root_line}"
+
+  build_root = build_root_line.split('=').last
+    # Use strip to remove leading white space
+  build_root_no_space = build_root.strip + "/Debug-iphonesimulator/AdManagerTest.app"
+
+  # Use the `du` command to get the file size in megabytes
+  app_size_in_mb = sh("du -sh -m '#{build_root_no_space}' | awk '{print $1}'").to_i
+
+  puts "App size h : #{app_size_in_mb} MB"
+
+  # Retrieve app size metrics
+  #build_settings = sh("xcodebuild -showBuildSettings -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest")
+
+ # puts "Path for .app : #{app_path}"
+  #app_size_info = sh("du -sh #{app_path}")
+
+  # Extract summary and print
+  #summary = extract_summary(build_settings, app_size_info)
+  #puts "App Size Metrics Summary:"
+  #puts summary
+end
+
 lane :generate_app_size_metrics do
   # Build the app
-  sh("xcodebuild -workspace #{workspace_path} -scheme #{scheme} clean build -destination 'generic/platform=iOS Simulator'")
-  sh("echo $BITRISE_XCODE_ARCHIVE_PATH")
-  sh("echo $BITRISE_DEPLOY_DIR")
-  sh("echo $BITRISE_SOURCE_DIR")
-  puts "Sym root : #{ENV["SYMROOT"]}"
-  # Get the path to the .app bundle
-  app_path = ENV["CODESIGNING_FOLDER_PATH"] + "/AdManagerTest.app"
+  sh("xcodebuild -workspace #{workspace_path} -scheme #{scheme}  clean build -destination 'generic/platform=iOS Simulator'")
+  # Run xcodebuild and capture build settings in a variable
+  build_settings=sh("xcodebuild -workspace #{workspace_path}  -scheme #{scheme} -showBuildSettings | grep 'BUILD_ROOT'")
+  
+  # Split the string by '=' and remove leading/trailing spaces
+  # Use regex to find the BUILD_ROOT value
+  # Split the output into lines and find the line containing BUILD_ROOT
+  build_root_line = build_settings.lines.find { |line| line.include?("BUILD_ROOT") }
+  puts "build_root_line : #{build_root_line}"
+  
+  build_root = build_root_line.split('=').last
+  # Use strip to remove leading white space
+  build_root_no_space = build_root.strip + "/Debug-iphonesimulator/AdManagerTest.app"
+  
+  # Use the `du` command to get the file size in megabytes
+  app_size_in_mb = sh("du -sh -m '#{build_root_no_space}' | awk '{print $1}'").to_i
+  
+  puts "App size h : #{app_size_in_mb} MB"
 
-  # Calculate the app size
-  app_size_info = sh("du -sh #{app_path}")
-  puts "App size : #{app_size_info}"
   # Retrieve app size metrics
   #build_settings = sh("xcodebuild -showBuildSettings -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest")
 
