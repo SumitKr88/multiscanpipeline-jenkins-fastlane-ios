@@ -151,6 +151,16 @@ lane :generate_app_size do
   build_root = build_root_line.split('=').last
     # Use strip to remove leading white space
   build_root_no_space = build_root.strip + "/Debug-iphonesimulator/AdManagerTest.app"
+  build_root_path = build_root.strip + "/Debug-iphonesimulator"
+  # Use Dir.glob to find all .ipa files in the directory
+  ipa_files = Dir.glob(File.join(build_root_path, "*.app"))
+
+  if ipa_files.empty?
+    puts("No .ipa files found in #{build_root_path}")
+  else
+    puts("Found .ipa files:")
+    puts("ipa file name: #{ipa_files.first}")
+  end
 
   # Use the `du` command to get the file size in megabytes
   app_size_in_mb = sh("du -sh -m '#{build_root_no_space}' | awk '{print $1}'").to_i
@@ -184,6 +194,17 @@ lane :generate_app_size_metrics do
   build_root = build_root_line.split('=').last
   # Use strip to remove leading white space
   build_root_no_space = build_root.strip + "/Debug-iphonesimulator/AdManagerTest.app"
+
+  build_root_path = build_root.strip + "/Debug-iphonesimulator"
+  # Use Dir.glob to find all .ipa files in the directory
+  ipa_files = Dir.glob(File.join(build_root_path, "*.app"))
+
+  if ipa_files.empty?
+    puts("No .ipa files found in #{build_root_path}")
+  else
+    puts("Found .ipa files:")
+    puts("ipa file name: #{ipa_files.first}")
+  end
   
   # Use the `du` command to get the file size in megabytes
   app_size_in_mb = sh("du -sh -m '#{build_root_no_space}' | awk '{print $1}'").to_i
