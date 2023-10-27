@@ -206,8 +206,9 @@ lane :generate_app_size_metrics do
     puts("ipa file name: #{ipa_files.first}")
   end
   
+  build_ipa_path = ipa_files.first
   # Use the `du` command to get the file size in megabytes
-  app_size_in_mb = sh("du -sh -m '#{build_root_no_space}' | awk '{print $1}'").to_i
+  app_size_in_mb = sh("du -sh -m '#{build_ipa_path}' | awk '{print $1}'").to_i
   
   puts "App size h : #{app_size_in_mb} MB"
 
