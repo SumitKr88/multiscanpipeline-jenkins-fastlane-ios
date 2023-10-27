@@ -208,10 +208,21 @@ lane :generate_app_size_metrics do
   
   build_ipa_path = ipa_files.first
   # Use the `du` command to get the file size in megabytes
-  app_size_in_mb = sh("du -sh -m '#{build_ipa_path}' | awk '{print $1}'").to_i
+  app_size_in_mb = sh("du -sh -m '#{build_ipa_path}' | awk '{print $1}'")
   
   puts "App size h : #{app_size_in_mb} MB"
 
+  # Define the threshold size in megabytes
+  threshold_size = '10'
+  # Send a Slack notification
+  if app_size_in_mb > threshold_size 
+    slack(
+      message: "<TESTING> App size exceeded threshold: #{threshold_size} MB",
+      success: false,
+      slack_url: ENV['SLACK_WEBHOOK_URL'],
+      default_payloads: [:git_branch, :last_git_commit_message]
+    )
+  end
   # Retrieve app size metrics
   #build_settings = sh("xcodebuild -showBuildSettings -workspace /Users/sumitkumar/Documents/GitHub/multiscanpipeline-jenkins-fastlane-ios/AdManagerTest.xcworkspace -scheme AdManagerTest")
 
